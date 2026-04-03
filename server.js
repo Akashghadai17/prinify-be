@@ -14,7 +14,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const MONGO_URI = process.env.MONGO_URI;
 console.log("Mongo URI:", MONGO_URI);
 
-app.use(cors());
+
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // Log requests
@@ -35,6 +36,8 @@ const userSchema = new mongoose.Schema({
   password: String,
   createdAt: { type: Date, default: Date.now }
 });
+
+app.get('/api/test', (req, res) => res.json({ msg: 'Backend is working!' }))
 
 const orderSchema = new mongoose.Schema({
   userId: mongoose.Schema.Types.ObjectId,
@@ -274,11 +277,7 @@ app.delete('/api/admin/users/:id', adminAuth, async (req, res) => {
   res.json({ message: 'User deleted successfully' });
 });
 
-app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'));
-});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
